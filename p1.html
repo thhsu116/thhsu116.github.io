@@ -1,23 +1,27 @@
-<html>
-<script src='https://d3js.org/d3.v5.min.js'></script>
+<!DOCTYPE html>
+<script src='https://d3js.org/d3.v4.min.js'></script>
+
 <style> 
 #tooltip {
     opacity: 0;
 	postition: absolute;
 	text-align: center;
-	width: 60px; height: 40px;
+	width: 60px; height: 20px;
 	background: white;
-	border: 0px;
+	border: solid;
 }
 </style>
+
+<html>
 <body>
-<svg width=300 height=300>
-</svg>
+<svg class="chart" width=500 height=500></svg>
+
 <div id="tooltip"></div>
+
 <script>
-var data = [0.254,0.188,0.135,0.092,0.331];
-var x = d3.scaleBand().domain([0,1,2,3,4]).range([0,200]);
-var y = d3.scaleLinear().domain([0,0.4]).range([200,0]);
+var data = [25.4,18.8,13.5,9.2,33.1];
+var x = d3.scaleBand().domain([0,1,2,3,4]).range([0,400]);
+var y = d3.scaleLinear().domain([0,40]).range([400,0]);
 
 var tooltip = d3.select("#tooltip");
 
@@ -25,19 +29,17 @@ d3.select("svg")
   .append("g")
     .attr("transform","translate("+50+","+50+")")
 	.selectAll("circle").data(data).enter().append("circle")
-	.attr("cx", function(d, i) { return (x(i)+200/5/2) } )
-    .attr("cy", function(d) { return y(d) } )
-    .attr("r", 5)
-    .attr("fill", "#69b3a2")
-    .on("mouseover", function(d,i) {
+	  .attr("cx", function(d, i) { return (x(i)+400/5/2) } )
+      .attr("cy", function(d) { return y(d) } )
+      .attr("r", 5)
+      .attr("fill", "#69b3a2")
+    .on("mouseover", function(d) {
         tooltip.style("opacity", 1)
-               .style("left",(d3.mouse(this)[0]+10)+"px")
-               .style("top",(d3.mouse(this)[1])+"px")
+               .style("left",(d3.event.pageX)+"px")
+               .style("top",(d3.event.pageY)+"px")
                .html(d);
     })
 	.on("mouseout", function() { tooltip.style("opacity", 0)});
-
-
 	
 d3.select("svg")
   .append("path")
@@ -47,7 +49,7 @@ d3.select("svg")
   .attr("stroke", "#69b3a2")
   .attr("stroke-width", 1.5)
   .attr("d", d3.line()
-        .x(function(d, i) { return (x(i)+200/5/2)})
+        .x(function(d, i) { return (x(i)+400/5/2)})
         .y(function(d) { return y(d) })
    );
 
@@ -58,34 +60,34 @@ d3.select("svg")
 
 d3.select("svg")
   .append("g")
-  .attr("transform","translate("+50+","+250+")")
+  .attr("transform","translate("+50+","+450+")")
   .call(d3.axisBottom(x).tickFormat((d, i)=>['0-3', '3-10', '10-16', '16-3P', '3P'][i]));
   
 d3.select("svg")
   .append("text")
   .attr("class", "x label")
   .attr("text-anchor", "end")
-  .attr("x", 190)
-  .attr("y", 285)
-  .text("shot distance");
+  .attr("x", 290)
+  .attr("y", 485)
+  .text("shot distance (feet)");
   
 d3.select("svg")
   .append("text")
   .attr("class", "y label")
   .attr("text-anchor", "end")
-  .attr("x", -130)
+  .attr("x", -200)
   .attr("y", 0)
   .attr("dy", ".75em")
   .attr("transform", "rotate(-90)")
   .text("% of FGA");
 
-d3.select("svg")
-  .append("text")
-  .attr("transform","translate("+50+","+50+")")
-  .attr("x", x(4)+200/5/2 + 12)
-  .attr("y", y(0.331))
-  .attr("fill", "#69b3a2")
-  .text("2023");
+<!-- d3.select("svg") -->
+  <!-- .append("text") -->
+  <!-- .attr("transform","translate("+50+","+50+")") -->
+  <!-- .attr("x", x(4)+200/5/2 + 12) -->
+  <!-- .attr("y", y(0.331)) -->
+  <!-- .attr("fill", "#69b3a2") -->
+  <!-- .text("2023"); -->
 
 </script>
 </body>
