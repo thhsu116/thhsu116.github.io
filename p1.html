@@ -1,95 +1,121 @@
 <!DOCTYPE html>
 <script src='https://d3js.org/d3.v4.min.js'></script>
 
-<style> 
-#tooltip {
-    opacity: 0;
-	postition: absolute;
-	text-align: center;
-	width: 60px; height: 20px;
-	background: white;
-	border: solid;
-}
-</style>
-
 <html>
 <body>
-<svg class="chart" width=500 height=500></svg>
+<button onclick="update('var1')">2023</button>
+<button onclick="update('var2')">1997</button>
 
-<div id="tooltip"></div>
+<div id="my_dataviz"></div>
 
 <script>
-var data = [25.4,18.8,13.5,9.2,33.1];
+
+var dist = ['0 to 3 feet', '3 to 10 feet', '10 to 16 feet', '16 feet to 3Pt', '3Pt and beyond'];
 var x = d3.scaleBand().domain([0,1,2,3,4]).range([0,400]);
 var y = d3.scaleLinear().domain([0,40]).range([400,0]);
 
-var tooltip = d3.select("#tooltip");
+var tooltip = d3.select("#my_dataviz")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("position", "absolute")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px")
 
-d3.select("svg")
-  .append("g")
-    .attr("transform","translate("+50+","+50+")")
-	.selectAll("rect").data(data).enter().append("rect")
-	  .attr("x", function(d, i) { return (x(i)) } )
-      .attr("y", function(d) { return y(d) } )
-      .attr("width", 400/5-2)
-	  .attr("height", function(d, i) {return (400 - y(d));})
-      .attr("fill", "#69b3a2")
-    .on("mouseover", function(d) {
-        tooltip.style("opacity", 1)
-               .style("left",(d3.event.pageX)+"px")
-               .style("top",(d3.event.pageY)+"px")
-               .html(d);
-    })
-	.on("mouseout", function() { tooltip.style("opacity", 0)});
-	
-<!-- d3.select("svg") -->
-  <!-- .append("path") -->
-  <!-- .attr("transform","translate("+50+","+50+")") -->
-  <!-- .datum(data) -->
-  <!-- .attr("fill", "none") -->
-  <!-- .attr("stroke", "#69b3a2") -->
-  <!-- .attr("stroke-width", 1.5) -->
-  <!-- .attr("d", d3.line() -->
-        <!-- .x(function(d, i) { return (x(i)+400/5/2)}) -->
-        <!-- .y(function(d) { return y(d) }) -->
-   <!-- ); -->
+var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+	d3.select(this)
+	  .style("stroke", "black")
+	  .style("opacity", 1)
+  }
 
-d3.select("svg")
+var mousemove = function(d, i) {
+    tooltip
+      .html(d + "% of FGA took place at " + dist[i])
+      .style("left", (d3.mouse(this)[0]) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", (d3.mouse(this)[1]) + "px")
+  }
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+var mouseleave = function(d) {
+    tooltip
+      <!-- .transition() -->
+      <!-- .duration(200) -->
+      .style("opacity", 0)
+	d3.select(this)
+	  .style("stroke", "none")
+	  .style("opacity", 1)
+  }
+
+// set the dimensions and margins of the graph
+var margin = {top: 50, right: 50, bottom: 50, left: 50},
+    width = 500 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
   .append("g")
-  .attr("transform","translate("+50+","+50+")")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("g")
   .call(d3.axisLeft(y));
 
-d3.select("svg")
-  .append("g")
-  .attr("transform","translate("+50+","+450+")")
+svg.append("g")
+  .attr("transform","translate(0, "+ height + ")")
   .call(d3.axisBottom(x).tickFormat((d, i)=>['0-3', '3-10', '10-16', '16-3P', '3P'][i]));
   
-d3.select("svg")
-  .append("text")
+svg.append("text")
   .attr("class", "x label")
   .attr("text-anchor", "end")
-  .attr("x", 290)
-  .attr("y", 485)
+  .attr("x", 250)
+  .attr("y", 450)
   .text("shot distance (feet)");
   
-d3.select("svg")
-  .append("text")
+svg.append("text")
   .attr("class", "y label")
   .attr("text-anchor", "end")
-  .attr("x", -200)
-  .attr("y", 0)
+  .attr("x", -150)
+  .attr("y", -50)
   .attr("dy", ".75em")
   .attr("transform", "rotate(-90)")
-  .text("% of FGA");
+  .text("% of total FGA");
 
-<!-- d3.select("svg") -->
-  <!-- .append("text") -->
-  <!-- .attr("transform","translate("+50+","+50+")") -->
-  <!-- .attr("x", x(4)+200/5/2 + 12) -->
-  <!-- .attr("y", y(0.331)) -->
-  <!-- .attr("fill", "#69b3a2") -->
-  <!-- .text("2023"); -->
+function update(selectedVar) {
+  let data;
+  switch (selectedVar) {
+    case 'var1':
+	  data = [25.4,18.8,13.5,9.2,33.1];
+	  break;
+	case 'var2':
+	  data = [34.1,14.2,14.9,15.6,21.2];
+  }
+  
+  var u = svg.selectAll("rect")
+      .data(data)
+  
+  u.enter().append("rect").merge(u)
+    .transition()
+	.duration(1000)
+	  .attr("x", function(d, i) { return (x(i)) } )
+      .attr("y", function(d) { return y(d) } )
+      .attr("width", x.bandwidth()-2)
+	  .attr("height", function(d, i) {return (height - y(d));})
+      .attr("fill", "#69b3a2")
+	
+  svg.selectAll("rect")  
+    .on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave )
+}
 
+update('var1')
 </script>
 </body>
 </html>
