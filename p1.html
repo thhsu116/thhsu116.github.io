@@ -28,10 +28,11 @@ var tooltip = d3.select("#tooltip");
 d3.select("svg")
   .append("g")
     .attr("transform","translate("+50+","+50+")")
-	.selectAll("circle").data(data).enter().append("circle")
-	  .attr("cx", function(d, i) { return (x(i)+400/5/2) } )
-      .attr("cy", function(d) { return y(d) } )
-      .attr("r", 5)
+	.selectAll("rect").data(data).enter().append("rect")
+	  .attr("x", function(d, i) { return (x(i)) } )
+      .attr("y", function(d) { return y(d) } )
+      .attr("width", 400/5-2)
+	  .attr("height", function(d, i) {return (400 - y(d));})
       .attr("fill", "#69b3a2")
     .on("mouseover", function(d) {
         tooltip.style("opacity", 1)
@@ -41,17 +42,17 @@ d3.select("svg")
     })
 	.on("mouseout", function() { tooltip.style("opacity", 0)});
 	
-d3.select("svg")
-  .append("path")
-  .attr("transform","translate("+50+","+50+")")
-  .datum(data)
-  .attr("fill", "none")
-  .attr("stroke", "#69b3a2")
-  .attr("stroke-width", 1.5)
-  .attr("d", d3.line()
-        .x(function(d, i) { return (x(i)+400/5/2)})
-        .y(function(d) { return y(d) })
-   );
+<!-- d3.select("svg") -->
+  <!-- .append("path") -->
+  <!-- .attr("transform","translate("+50+","+50+")") -->
+  <!-- .datum(data) -->
+  <!-- .attr("fill", "none") -->
+  <!-- .attr("stroke", "#69b3a2") -->
+  <!-- .attr("stroke-width", 1.5) -->
+  <!-- .attr("d", d3.line() -->
+        <!-- .x(function(d, i) { return (x(i)+400/5/2)}) -->
+        <!-- .y(function(d) { return y(d) }) -->
+   <!-- ); -->
 
 d3.select("svg")
   .append("g")
