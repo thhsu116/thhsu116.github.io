@@ -1,0 +1,92 @@
+<html>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style> 
+#tooltip {
+    opacity: 0;
+	postition: absolute;
+	text-align: center;
+	width: 60px; height: 40px;
+	background: white;
+	border: 0px;
+}
+</style>
+<body>
+<svg width=300 height=300>
+</svg>
+<div id="tooltip"></div>
+<script>
+var data = [0.254,0.188,0.135,0.092,0.331];
+var x = d3.scaleBand().domain([0,1,2,3,4]).range([0,200]);
+var y = d3.scaleLinear().domain([0,0.4]).range([200,0]);
+
+var tooltip = d3.select("#tooltip");
+
+d3.select("svg")
+  .append("g")
+    .attr("transform","translate("+50+","+50+")")
+	.selectAll("circle").data(data).enter().append("circle")
+	.attr("cx", function(d, i) { return (x(i)+200/5/2) } )
+    .attr("cy", function(d) { return y(d) } )
+    .attr("r", 5)
+    .attr("fill", "#69b3a2")
+    .on("mouseover", function(d,i) {
+        tooltip.style("opacity", 1)
+               .style("left",(d3.mouse(this)[0]+10)+"px")
+               .style("top",(d3.mouse(this)[1])+"px")
+               .html(d);
+    })
+	.on("mouseout", function() { tooltip.style("opacity", 0)});
+
+
+	
+d3.select("svg")
+  .append("path")
+  .attr("transform","translate("+50+","+50+")")
+  .datum(data)
+  .attr("fill", "none")
+  .attr("stroke", "#69b3a2")
+  .attr("stroke-width", 1.5)
+  .attr("d", d3.line()
+        .x(function(d, i) { return (x(i)+200/5/2)})
+        .y(function(d) { return y(d) })
+   );
+
+d3.select("svg")
+  .append("g")
+  .attr("transform","translate("+50+","+50+")")
+  .call(d3.axisLeft(y));
+
+d3.select("svg")
+  .append("g")
+  .attr("transform","translate("+50+","+250+")")
+  .call(d3.axisBottom(x).tickFormat((d, i)=>['0-3', '3-10', '10-16', '16-3P', '3P'][i]));
+  
+d3.select("svg")
+  .append("text")
+  .attr("class", "x label")
+  .attr("text-anchor", "end")
+  .attr("x", 190)
+  .attr("y", 285)
+  .text("shot distance");
+  
+d3.select("svg")
+  .append("text")
+  .attr("class", "y label")
+  .attr("text-anchor", "end")
+  .attr("x", -130)
+  .attr("y", 0)
+  .attr("dy", ".75em")
+  .attr("transform", "rotate(-90)")
+  .text("% of FGA");
+
+d3.select("svg")
+  .append("text")
+  .attr("transform","translate("+50+","+50+")")
+  .attr("x", x(4)+200/5/2 + 12)
+  .attr("y", y(0.331))
+  .attr("fill", "#69b3a2")
+  .text("2023");
+
+</script>
+</body>
+</html>
