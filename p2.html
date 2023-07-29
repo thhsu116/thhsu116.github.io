@@ -67,6 +67,22 @@ d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
       .range([ height, 0 ]);
     svg.append("g")
       .call(d3.axisLeft(y));
+	  
+	svg.append("text")
+	  .attr("class", "x label")
+	  .attr("text-anchor", "end")
+	  .attr("x", 230)
+	  .attr("y", 440)
+	  .text("year");
+  
+	svg.append("text")
+	  .attr("class", "y label")
+	  .attr("text-anchor", "end")
+	  .attr("x", -150)
+	  .attr("y", -50)
+	  .attr("dy", ".75em")
+	  .attr("transform", "rotate(-90)")
+	  .text("% of total FGA");
 
     // Add the lines
     var line = d3.line()
@@ -115,6 +131,11 @@ d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
           .text(function(d) { return d.name; })
           .style("fill", function(d){ return myColor(d.name) })
           .style("font-size", 15)
+		  
+    // hide these groups by default
+	d3.selectAll(".p0-3").style("opacity",0)
+	d3.selectAll(".p3-10").style("opacity",0)
+	d3.selectAll(".p10-16").style("opacity",0)
 
     // Add a legend (interactive)
     svg
@@ -132,7 +153,7 @@ d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
           // is the element currently visible ?
           currentOpacity = d3.selectAll("." + groupName[i]).style("opacity")
           // Change the opacity: from 0 to 1 or from 1 to 0
-          d3.selectAll("." + groupName[i]).transition().style("opacity", currentOpacity == 1 ? 0.2:1)
+          d3.selectAll("." + groupName[i]).transition().style("opacity", currentOpacity == 1 ? 0:1)
 
         })
 })
