@@ -3,8 +3,9 @@
 
 <html>
 <body>
-<button onclick="update('var1')">2023</button>
-<button onclick="update('var2')">1997</button>
+
+<!-- Initialize a select button -->
+<select id="selectButton"></select>
 
 <div id="my_dataviz"></div>
 
@@ -64,6 +65,18 @@ var svg = d3.select("#my_dataviz")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
+// List of groups (here I have one group per column)
+var allGroup = ["2023", "1997"];
+
+// add the options to the button
+d3.select("#selectButton")
+  .selectAll('myOptions')
+	.data(allGroup)
+  .enter()
+	.append('option')
+  .text(function (d) { return d; }) // text showed in the menu
+  .attr("value", function (d) { return d; }); // corresponding value returned by the button
+
 svg.append("g")
   .call(d3.axisLeft(y));
 
@@ -90,10 +103,10 @@ svg.append("text")
 function update(selectedVar) {
   let data;
   switch (selectedVar) {
-    case 'var1':
+	case "2023":
 	  data = [25.4,18.8,13.5,9.2,33.1];
 	  break;
-	case 'var2':
+	case "1997":
 	  data = [34.1,14.2,14.9,15.6,21.2];
   }
   
@@ -115,7 +128,14 @@ function update(selectedVar) {
     .on("mouseleave", mouseleave )
 }
 
-update('var1')
+update('2023')
+// When the button is changed, run the updateChart function
+d3.select("#selectButton").on("change", function(d) {
+	// recover the option that has been chosen
+	var selectedVar = d3.select(this).property("value")
+	// run the updateChart function with this selected option
+	update(selectedVar)
+})
 </script>
 </body>
 </html>
