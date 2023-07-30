@@ -49,17 +49,26 @@ body, html {
 </head>
 <body>
 
-<p>In this example, we use JavaScript to "click" on the London button, to open the tab on page load.</p>
+<pre>
+  Starting from 1998, NBA tracks the location and distance to the rim of every field goal attempt (FGA) in a game.
+  This project shows, on average:
+	1. How a NBA team's FGA is distributed over different distances in a game 
+	2. How FGA distribution evolves over time
+</pre>
 
 <div class="tab">
-  <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">London</button>
-  <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
-  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+  <button class="tablinks" onclick="openPage(event, 1)" id="defaultOpen">1</button>
+  <button class="tablinks" onclick="openPage(event, 2)">2</button>
 </div>
 
-<div id="London" class="tabcontent">
-  <h3>London</h3>
-  <p>London is the capital city of England.</p>
+<div id=1 class="tabcontent">
+  <h3>Single Season FGA Distribution</h3>
+  <pre>
+  FGA is categorized according to its distance to the rim, and each category is associated 
+  with a number representing the portion of total FGA comming from the categoty. Use the 
+  dropdown menu to select year. Notice the drastic change in FGA distribution from 
+  year 1998 to 2023.
+  </pre>
   <object type="text/html"
     data="./p1.html"
     width=100%
@@ -67,9 +76,13 @@ body, html {
   </object>
 </div>
 
-<div id="Paris" class="tabcontent">
-  <h3>Paris</h3>
-  <p>Paris is the capital of France.</p>
+<div id=2 class="tabcontent">
+  <h3>Chane of FGA Distribution Over Time</h3>
+  <pre>
+  Click on the legend to show/hide how the portion of total FGA of a category changes over time.
+  Notice the upwoard trend of 3 point shots and the downward trend of long two point shots ( 
+  shots from 16 feet beyond but within 3 point line)
+  </pre>
   <object type="text/html"
     data="./p2.html"
     width=100%
@@ -77,13 +90,9 @@ body, html {
   </object>
 </div>
 
-<div id="Tokyo" class="tabcontent">
-  <h3>Tokyo</h3>
-  <p>Tokyo is the capital of Japan.</p>
-</div>
 
 <script>
-function openCity(evt, cityName) {
+function openPage(evt, pageNum) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -93,7 +102,7 @@ function openCity(evt, cityName) {
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
-  document.getElementById(cityName).style.display = "block";
+  document.getElementById(pageNum).style.display = "block";
   evt.currentTarget.className += " active";
 }
 
