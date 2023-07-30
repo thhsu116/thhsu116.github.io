@@ -66,7 +66,9 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // List of groups (here I have one group per column)
-var allGroup = ["2023", "1998"];
+var allGroup = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 
+                2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004,
+				2003, 2002, 2001, 2000, 1999, 1998];
 
 // add the options to the button
 d3.select("#selectButton")
@@ -101,31 +103,29 @@ svg.append("text")
   .text("% of total FGA");
 
 function update(selectedVar) {
-  let data;
-  switch (selectedVar) {
-	case "2023":
-	  data = [24.6,20.6,9.70,6.40,38.7];
-	  break;
-	case "1998":
-	  data = [28.6,17.8,16.3,21.3,15.9];
-  }
   
-  var u = svg.selectAll("rect")
-      .data(data)
+  d3.csv("https://thhsu116.github.io/fga_dist.csv", function(csvData) {
   
-  u.enter().append("rect").merge(u)
-    .transition()
-	.duration(1000)
-	  .attr("x", function(d, i) { return (x(i)) } )
-      .attr("y", function(d) { return y(d) } )
-      .attr("width", x.bandwidth()-2)
-	  .attr("height", function(d, i) {return (height - y(d));})
-      .attr("fill", "#69b3a2")
-	
-  svg.selectAll("rect")  
-    .on("mouseover", mouseover )
-    .on("mousemove", mousemove )
-    .on("mouseleave", mouseleave )
+      var rowData = csvData[selectedVar - 1998];
+	  var data = [rowData['0-3'], rowData['3-10'], rowData['10-16'], rowData['16-3P'], rowData['3P']];
+      //console.log(data);
+	  var u = svg.selectAll("rect")
+		  .data(data)
+	  
+	  u.enter().append("rect").merge(u)
+		.transition()
+		.duration(1000)
+		  .attr("x", function(d, i) { return (x(i)) } )
+		  .attr("y", function(d) { return y(d) } )
+		  .attr("width", x.bandwidth()-2)
+		  .attr("height", function(d, i) {return (height - y(d));})
+		  .attr("fill", "#69b3a2")
+		
+	  svg.selectAll("rect")  
+		.on("mouseover", mouseover )
+		.on("mousemove", mousemove )
+		.on("mouseleave", mouseleave )
+  })
 }
 
 update('2023')
