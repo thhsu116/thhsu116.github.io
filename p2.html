@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 
 <!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- Load d3-annotation -->
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
 <html>
 <body>
@@ -11,7 +13,6 @@
 
 <!-- Color Scale -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
 
 <script>
 
@@ -28,6 +29,15 @@ var svg = d3.select("#my_dataviz")
   .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+
+// scaling function for X and Y axis
+var x = d3.scaleLinear()
+  .domain([1998,2023])
+  .range([ 0, width ]);
+
+var y = d3.scaleLinear()
+  .domain( [0,40])
+  .range([ height, 0 ]);
 
 var groupName = ["p0-3","p3-10","p10-16","p16-3P","p3P"]
 
@@ -68,6 +78,100 @@ var mouseleave = function(d) {
 	  .style("stroke", "none")
 	  <!-- .style("opacity", 1) -->
   }
+  
+// Features of the annotation
+const type = d3.annotationCustomType(
+  d3.annotationCalloutCurve, 
+  {"className":"custom",
+    "connector":{"type":"elbow",
+    "end":"arrow"},
+    "note":{"lineType":"horizontal",
+    "align":"dynamic"}})
+
+const annotation1 = [
+  {
+    note: {
+      label: "Illegal defense eliminated",
+      <!-- title: "Annotation title" -->
+    },
+	color: "red",
+    x: x(2002),
+    y: y(0),
+    dy: -80,
+    dx: 0,
+	connector: {
+          curve: d3.curveBasis
+        }
+  }
+]
+
+const makeAnnotation1 = d3.annotation()
+  .type(type)
+  .annotations(annotation1)
+  
+const annotation2 = [
+  {
+    note: {
+      label: "hand-checking not allowed",
+      <!-- title: "Annotation title" -->
+    },
+	color: "red",
+    x: x(2005),
+    y: y(0),
+    dy: -20,
+    dx: 0,
+	connector: {
+          curve: d3.curveBasis
+        }
+  }
+]
+
+const makeAnnotation2 = d3.annotation()
+  .type(type)
+  .annotations(annotation2)  
+  
+const annotation3 = [
+  {
+    note: {
+      label: "Houston Rockets' Morey Ball",
+      <!-- title: "Annotation title" -->
+    },
+	color: "blue",
+    x: x(2013),
+    y: y(0),
+    dy: -100,
+    dx: 0,
+	connector: {
+          curve: d3.curveBasis
+        } 
+  }
+]
+
+const makeAnnotation3 = d3.annotation()
+  .type(type)
+  .annotations(annotation3)  
+  
+  
+const annotation4 = [
+  {
+    note: {
+      label: "Golden State Warriors' 1st championship",
+      <!-- title: "Annotation title" -->
+    },
+	color: "blue",
+    x: x(2015),
+    y: y(0),
+    dy: -20,
+    dx: 0,
+	connector: {
+          curve: d3.curveBasis
+        } 
+  }
+]
+
+const makeAnnotation4 = d3.annotation()
+  .type(type)
+  .annotations(annotation4)  
 
 //Read the data
 d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
@@ -94,18 +198,12 @@ d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
       .domain(allGroup)
       .range(d3.schemeSet2);
 
-    // Add X axis --> it is a date format
-    var x = d3.scaleLinear()
-      .domain([1998,2023])
-      .range([ 0, width ]);
+    // Add X axis
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
 
     // Add Y axis
-    var y = d3.scaleLinear()
-      .domain( [0,40])
-      .range([ height, 0 ]);
     svg.append("g")
       .call(d3.axisLeft(y));
 	  
@@ -203,6 +301,23 @@ d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
 		.on("mouseover", mouseover )
 		.on("mousemove", mousemove )
 		.on("mouseleave", mouseleave )
+		
+	// Add annotation to the chart
+	svg
+	  .append("g")
+	  .call(makeAnnotation1)
+	  
+	svg
+	  .append("g")
+	  .call(makeAnnotation2)
+	  
+	svg
+	  .append("g")
+	  .call(makeAnnotation3)
+	  
+	svg
+	  .append("g")
+	  .call(makeAnnotation4)
 })
 
 
