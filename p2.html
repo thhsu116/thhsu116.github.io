@@ -55,7 +55,7 @@ var mouseover = function(d) {
 
 var mousemove = function(d) {
     tooltip
-      .html(d.value + "%")
+      .html(d.time + ", " + d.value + "%")
       .style("left", (d3.mouse(this)[0]) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", (d3.mouse(this)[1]) + "px")
   }
@@ -123,7 +123,7 @@ d3.csv("https://thhsu116.github.io/fga_dist.csv", function(data) {
 	  .attr("y", -50)
 	  .attr("dy", ".75em")
 	  .attr("transform", "rotate(-90)")
-	  .text("% of total FGA");
+	  .text("% of Total FGA");
 
     // Add the lines
     var line = d3.line()
